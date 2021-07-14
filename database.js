@@ -36,4 +36,4 @@ const publication = [
 },
 ];
 
- module.exports = { books, author, publication };
+ module.exports = { books, authors, publications };

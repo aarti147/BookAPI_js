@@ -1,12 +1,29 @@
+require("dotenv").config();
+
+//framework
 const express = require("express");
+const mongoose = require("mongoose");   //mongoose
 
-
+//database
 const database = require("./database");
 
+//initializing express
 const booky = express();
 
 //configuration
  booky.use(express.json());
+
+ // establish a connection   ........ mongoose
+ mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+ }
+ )
+   .then(() => console.log("connection established!!!!"));
+
+
 /*route         /
 descrption      get all books
 access          public
@@ -329,3 +346,10 @@ booky.delete("/publication/delet/book/:isbn/:pubId", (req, res) => {
 });
 
    booky.listen(3000,() => console.log("hey this is running"));
+
+
+
+   //talk with mongodb in which mongod can understand *****
+   //talk to us in which we can understand === javascript
+
+   //mongoose

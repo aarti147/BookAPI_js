@@ -4,7 +4,7 @@ let books = [{
     pubDate: "2021-07-07",
     language: "en",
     numPage: 250,
-    publications: [1],
+    publication: 1,
     authors: [1,2],
     category: ["tech","programming","education","thriller"],
 },
@@ -36,4 +36,4 @@ const publication = [
 },
 ];
 
- module.exports = { books, authors, publications };
+ module.exports = { books, author, publication };

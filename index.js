@@ -8,9 +8,10 @@ const mongoose = require("mongoose");   //mongoose
 const database = require("./database/index");
 
 //models
-const BookModels = require("./database/Book");
-const AuthorModels = require("./database/Author");
-const PublicationModels = require("./database/Publication");
+const BookModel = require("./database/Book");
+const AuthorModel = require("./database/Author");
+const PublicationModel = require("./database/Publication");
+const { find } = require("./database/Book");
 
 //initializing express
 const booky = express();
@@ -36,8 +37,9 @@ paramter        none
 methods         get
 */ 
 
-booky.get("/", (req, res) => {
-   return res.json({ books: database.books});
+booky.get("/", async (req, res) => {
+    const getAllBooks = await BookModel.find();
+   return res.json(getAllBooks);
 
 });
 
@@ -48,11 +50,18 @@ paramter        isbn
 methods         get
 */ 
 
-booky.get("/is/:isbn", (req, res) => {
-    const getSpecificBook = database.books.filter(
-        (book) => book.ISBN === req.params.isbn );
+booky.get("/is/:isbn", async (req, res) => {
+    //code using of mongodb
+    const getSpecificBook = await BookModel.findOne({ ISBN: req.params.isbn});
 
-        if(getSpecificBook.length === 0) {
+
+    //normal code without using of mongodb
+   // const getSpecificBook = database.books.filter(
+      //  (book) => book.ISBN === req.params.isbn );
+
+
+      //! is required coz we cannot specify null (0) here bcoz it return null output
+        if(!getSpecificBook) {
             return res.json({
                 error: `no book found for the ISBN of ${req.params.isbn}`,
             });
@@ -63,22 +72,27 @@ booky.get("/is/:isbn", (req, res) => {
     });
 /*
 route           /c
-descrption      get all books
+descrption      get specific books based oN category
 access          public
 paramter        category
 methods         get
 */ 
-booky.get("/c/:category", (req, res) => {
-const getSpecificBook = database.books.filter((book) => book.category.includes(req.params.category)
-);
+booky.get("/c/:category", async (req, res) => {
+//with mongo
+const getSpecificBooks = await BookModel.findOne({category: req.params.category,});
 
-if(getSpecificBook.length === 0) {
+
+//const getSpecificBook = database.books.filter((book) => book.category.includes(req.params.category)
+//);
+
+if(!getSpecificBooks) {
+
     return res.json({
         error: `no book found for the category of ${req.params.category}`,
     });
 }
 return res.json({
-    book: getSpecificBook
+    books: getSpecificBooks
 });
 
 });
@@ -110,8 +124,9 @@ access          public
 paramter        none
 methods         get
 */ 
-booky.get("/author", (req, res) => {
-    return res.json({ authors:database.author});
+booky.get("/author", async (req, res) => {
+const getAllAuthors = await AuthorModel.find();
+    return res.json({ authors:getAllAuthors});
     
 });
 /*route         /i
@@ -172,10 +187,12 @@ access          public
 paramter        none
 methods         post
 */ 
-booky.post("/book/add", (req, res) => {
+booky.post("/book/add", async (req, res) => {
     const {newBook} = req.body;
-    database.books.push(newBook);
-    return res.json({books: database.books});
+
+    const addNewBook = BookModel.create(newBook);
+    
+    return res.json({books: addNewBook, message: "book is added"});
 });
 /*
 route           /author/add
@@ -184,10 +201,12 @@ access          public
 paramter        none
 methods         post
 */ 
-booky.post("/author/add", (req, res) => {
+booky.post("/author/add",  (req, res) => {
     const { newAuthor } = req.body;
-    database.author.push(newAuthor);
-    return res.json({ authors: database.author });
+
+     AuthorModel.create(newAuthor);
+
+    return res.json({ message: "author is added" });
 });
 /*
 route           book/update/title

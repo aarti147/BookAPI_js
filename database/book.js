@@ -3,18 +3,18 @@ const mongoose = require("mongoose");
 
 const BookSchema = mongoose.Schema({
 ISBN: String,
-title:String ,
+title: String ,
 pubDate: String,
 language: String,
 numPage: Number,     
-publications: Number,
+publication: Number,
 authors: [Number],
-category: [Number],
+category: [String],
 });          
 
 
 //creat a book model
 
-const BookModel = mongoose.model(BookSchema);
+const BookModel = mongoose.model( "books", BookSchema);
 
-module.exports = BookMOdel;
+module.exports = BookModel;

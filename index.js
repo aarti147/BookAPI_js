@@ -215,15 +215,25 @@ access          public
 paramter        isbn
 methods         put
 */ 
-booky.put("/book/update/title/:isbn", (req, res) => {
-   database.books.forEach((book) => {
-       if (book.ISBN === req.params.isbn) {
-           book.title = req.body.newBookTitle;
-           return;
-       }
-   });
-   return res.json({ books: database.books });
+booky.put("/book/update/title/:isbn", async (req, res) => {
+   //with mongodb
+   const updatedBook = await BookModel.findOneAndUpdate(
+       { ISBN: req.params.isbn, },
+       {title: req.body.BookTitle, },
+       {new: true, },
+    );
+    return res.json({ books: updatedBook });
 });
+   
+   
+   /////without mongodb
+    //database.books.forEach((book) => {
+      // if (book.ISBN === req.params.isbn) {
+       //    book.title = req.body.newBookTitle;
+         //  return;
+       //}
+   //});
+  // return res.json({ books: database.books });
 /*
 route           book/update/author
 descrption      update  author for a book
